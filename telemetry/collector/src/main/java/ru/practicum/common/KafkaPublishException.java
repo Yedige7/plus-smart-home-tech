@@ -10,6 +10,11 @@ public class KafkaPublishException extends RuntimeException {
         this.key = key;
     }
 
-    public String getTopic() { return topic; }
-    public String getKey() { return key; }
+    public String getTopic() {
+        return topic;
+    }
+
+    public String getKey() {
+        return key;
+    }
 }
