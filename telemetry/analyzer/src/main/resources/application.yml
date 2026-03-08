@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/analyzer
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+app:
+  kafka:
+    topics:
+      hubs: telemetry.hubs.v1
+      snapshots: telemetry.snapshots.v1
+    groups:
+      hubs: analyzer-hub-events
+      snapshots: analyzer-snapshots
+
+grpc:
+  client:
+    hub-router:
+      address: static://localhost:59090
+      negotiationType: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
