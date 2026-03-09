@@ -52,7 +52,17 @@ public class HubRouterCommandSender {
                     .setTimestamp(ts)
                     .build();
 
+
+            log.info("Sending gRPC action: hubId={}, scenarioName={}, targetId={}, actionType={}, value={}",
+                    snapshot.getHubId(),
+                    scenario.getName(),
+                    link.getSensor().getId(),
+                    actionType,
+                    link.getAction().getValue());
+
             client.handleDeviceAction(req);
+
+            log.info("gRPC action sent successfully");
 
         } catch (Exception e) {
             log.error("Failed to send device action", e);

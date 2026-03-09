@@ -29,14 +29,24 @@ public class ScenarioEngine {
         }
 
         String hubId = snapshot.getHubId();
+        log.info("Handling snapshot for hubId={}", hubId);
 
         List<Scenario> scenarios = scenarioRepo.findFullByHubId(hubId);
+        log.info("Found {} scenarios for hubId={}", scenarios.size(), hubId);
 
         for (Scenario scenario : scenarios) {
+            log.info("Checking scenario: {}", scenario.getName());
 
             boolean triggered = scenarioTriggered(snapshot, scenario);
+            log.info("Scenario '{}' triggered={}", scenario.getName(), triggered);
+
             if (triggered) {
                 scenario.getActionLinks().forEach(link -> {
+                    log.info("Dispatching action for scenario='{}', targetId='{}', type='{}', value={}",
+                            scenario.getName(),
+                            link.getSensor().getId(),
+                            link.getAction().getType(),
+                            link.getAction().getValue());
                     commandSender.send(snapshot, scenario, link);
                 });
             }
@@ -74,6 +84,8 @@ public class ScenarioEngine {
                 case "LOWER_THAN" -> left < right;
                 default -> false;
             };
+            log.info("Condition check: scenario='{}', sensorId='{}', type='{}', op='{}', actual={}, expected={}, result={}",
+                    scenario.getName(), sensorId, c.getType(), op, left, right, result);
 
             return result;
         });

@@ -2,6 +2,7 @@ package ru.yandex.practicum.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.entity.*;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
 import ru.yandex.practicum.repository.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScenarioStorageService {
@@ -116,23 +118,32 @@ public class ScenarioStorageService {
 
         String hubId = event.getHubId().toString();
 
+        log.info("Hub event received: hubId={}, payloadType={}",
+                hubId,
+                event.getPayload().getClass().getSimpleName());
+
         if (event.getPayload() instanceof ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro added) {
+            log.info("DeviceAdded: hubId={}, deviceId={}", hubId, added.getId());
             upsertSensor(hubId, added.getId().toString());
             return;
         }
 
         if (event.getPayload() instanceof ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro removed) {
+            log.info("ScenarioRemoved: hubId={}", removed.getId().toString());
             deleteSensor(hubId, removed.getId().toString());
             return;
         }
 
         if (event.getPayload() instanceof ScenarioAddedEventAvro scenarioAdded) {
+            log.info("Scenario stored: hubId={}, scenarioName={}", hubId, scenarioAdded.getName());
             upsertScenario(hubId, scenarioAdded);
             return;
         }
 
         if (event.getPayload() instanceof ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro scenarioRemoved) {
+            log.info("ScenarioRemoved: hubId={}, scenarioName={}", hubId, scenarioRemoved.getName().toString());
             deleteScenario(hubId, scenarioRemoved.getName().toString());
+            log.info("Scenario removed from storage: hubId={}, scenarioName={}", hubId, scenarioRemoved.getName());
         }
     }
 }
