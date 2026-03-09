@@ -34,4 +34,5 @@ grpc:
 
 logging:
   level:
-    org.springframework.jdbc.datasource.init: DEBUG
+    root: INFO
+    ru.yandex.practicum: DEBUG

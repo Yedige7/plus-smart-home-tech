@@ -9,6 +9,7 @@ import ru.yandex.practicum.service.SnapshotProcessor;
 @SpringBootApplication
 public class AnalyzerApplication {
     public static void main(String[] args) {
+        System.out.println("=== ANALYZER APPLICATION STARTED ===");
         ConfigurableApplicationContext ctx = SpringApplication.run(AnalyzerApplication.class, args);
 
         HubEventProcessor hubEventProcessor = ctx.getBean(HubEventProcessor.class);
