@@ -31,7 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
+глобально:
 
 target/
 *.class
 .DS_Store
+
+глобально:
+
+.mvn/
+mvnw
+mvnw.cmd
