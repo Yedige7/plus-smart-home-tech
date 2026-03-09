@@ -23,7 +23,7 @@ public class ScenarioStorageService {
     private final ScenarioConditionLinkRepository condLinkRepo;
     private final ScenarioActionLinkRepository actionLinkRepo;
 
-    @Transactional
+
     public void upsertSensor(String hubId, String sensorId) {
         sensorRepo.findByIdAndHubId(sensorId, hubId).orElseGet(() -> {
             Sensor s = new Sensor();
@@ -33,14 +33,14 @@ public class ScenarioStorageService {
         });
     }
 
-    @Transactional
+
     public void deleteSensor(String hubId, String sensorId) {
         condLinkRepo.deleteBySensor_IdAndSensor_HubId(sensorId, hubId);
         actionLinkRepo.deleteBySensor_IdAndSensor_HubId(sensorId, hubId);
         sensorRepo.deleteByIdAndHubId(sensorId, hubId);
     }
 
-    @Transactional
+
     public void upsertScenario(String hubId, ScenarioAddedEventAvro dto) {
         Scenario scenario = scenarioRepo.findByHubIdAndName(hubId, dto.getName().toString())
                 .orElseGet(() -> {
@@ -97,7 +97,7 @@ public class ScenarioStorageService {
         scenarioRepo.save(scenario);
     }
 
-    @Transactional
+
     public void deleteScenario(String hubId, String name) {
         scenarioRepo.deleteByHubIdAndName(hubId, name);
     }
@@ -113,6 +113,7 @@ public class ScenarioStorageService {
         return 0;
     }
 
+    @Transactional
     public void handleHubEvent(HubEventAvro event) {
         if (event == null) return;
 
@@ -129,14 +130,14 @@ public class ScenarioStorageService {
         }
 
         if (event.getPayload() instanceof ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro removed) {
-            log.info("ScenarioRemoved: hubId={}", removed.getId().toString());
             deleteSensor(hubId, removed.getId().toString());
+            log.info("ScenarioRemoved: hubId={}", removed.getId().toString());
             return;
         }
 
         if (event.getPayload() instanceof ScenarioAddedEventAvro scenarioAdded) {
-            log.info("Scenario stored: hubId={}, scenarioName={}", hubId, scenarioAdded.getName());
             upsertScenario(hubId, scenarioAdded);
+            log.info("Scenario stored: hubId={}, scenarioName={}", hubId, scenarioAdded.getName());
             return;
         }
 

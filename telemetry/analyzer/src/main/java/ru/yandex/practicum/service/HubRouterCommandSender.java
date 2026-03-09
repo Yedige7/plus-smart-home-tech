@@ -51,7 +51,7 @@ public class HubRouterCommandSender {
                     .setAction(action)
                     .setTimestamp(ts)
                     .build();
-
+            log.info("gRPC request payload: {}", req);
 
             log.info("Sending gRPC action: hubId={}, scenarioName={}, targetId={}, actionType={}, value={}",
                     snapshot.getHubId(),

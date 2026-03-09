@@ -62,6 +62,9 @@ public class AggregationStarter {
                     if (updated.isPresent()) {
                         SensorsSnapshotAvro snapshot = updated.get();
 
+                        log.info("Publish snapshot: hubId={}, sensorId={}, payload={}",
+                                event.getHubId(), event.getId(), event.getPayload());
+
                         byte[] payload = AvroBinarySerializer.toBytes(snapshot);
 
                         ProducerRecord<String, byte[]> out =
@@ -72,6 +75,9 @@ public class AggregationStarter {
                                 log.error("Failed to send snapshot for hubId={}", snapshot.getHubId(), ex);
                             }
                         });
+                    } else {
+                        log.info("Skip snapshot: hubId={}, sensorId={}, reason=no state change",
+                                event.getHubId(), event.getId());
                     }
                 }
 

@@ -35,4 +35,4 @@ grpc:
 logging:
   level:
     root: INFO
-    ru.yandex.practicum: DEBUG
+    ru.yandex.practicum: INFO
