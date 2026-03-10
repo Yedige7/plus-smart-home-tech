@@ -10,6 +10,7 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
@@ -22,13 +23,13 @@ public class SnapshotProcessor {
     @Value("${app.kafka.topics.snapshots}")
     private String topic;
 
-    private volatile boolean running = true;
+    private static final AtomicBoolean running = new AtomicBoolean(true);
 
     public void start() {
         try (KafkaConsumer<String, SensorsSnapshotAvro> consumer =
                      (KafkaConsumer<String, SensorsSnapshotAvro>) snapshotConsumerFactory.createConsumer()) {
             consumer.subscribe(List.of(topic));
-            while (running) {
+            while (running.get()) {
                 var records = consumer.poll(Duration.ofMillis(1000));
                 if (records.isEmpty()) {
                     continue;
@@ -50,6 +51,6 @@ public class SnapshotProcessor {
     }
 
     public void stop() {
-        running = false;
+        running.set(false);
     }
 }

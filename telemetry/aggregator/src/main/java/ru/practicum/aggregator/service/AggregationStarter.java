@@ -30,7 +30,7 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class AggregationStarter {
 
-    private final SnapshotAggregator aggregator = new SnapshotAggregator();
+    private final SnapshotAggregator aggregator;
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     @Value("${app.kafka.topics.sensors}")
@@ -87,7 +87,7 @@ public class AggregationStarter {
             }
 
         } catch (WakeupException ignored) {
-
+            log.warn("Служебное исключение Kafka");
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий от датчиков", e);
         } finally {
@@ -98,7 +98,7 @@ public class AggregationStarter {
                     try {
                         consumer.commitSync();
                     } catch (Exception e) {
-                        log.warn("commitSync failed on shutdown", e);
+                        log.error("commitSync failed on shutdown", e);
                     }
                 }
             } finally {
@@ -109,18 +109,18 @@ public class AggregationStarter {
     }
 
     private KafkaConsumer<String, SensorEventAvro> buildConsumer() {
-        Properties p = new Properties();
+        Properties properties = new Properties();
 
-        p.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        p.put(ConsumerConfig.GROUP_ID_CONFIG, "telemetry-aggregator");
-        p.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        p.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        p.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "500");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "telemetry-aggregator");
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "500");
 
-        p.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        p.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class.getName());
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class.getName());
 
-        return new KafkaConsumer<>(p);
+        return new KafkaConsumer<>(properties);
     }
 
     private KafkaProducer<String, byte[]> buildProducer() {

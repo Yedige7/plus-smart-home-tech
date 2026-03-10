@@ -33,14 +33,14 @@ public class ScenarioStorageService {
         });
     }
 
-
+    @Transactional
     public void deleteSensor(String hubId, String sensorId) {
         condLinkRepo.deleteBySensor_IdAndSensor_HubId(sensorId, hubId);
         actionLinkRepo.deleteBySensor_IdAndSensor_HubId(sensorId, hubId);
         sensorRepo.deleteByIdAndHubId(sensorId, hubId);
     }
 
-
+    @Transactional
     public void upsertScenario(String hubId, ScenarioAddedEventAvro dto) {
         Scenario scenario = scenarioRepo.findByHubIdAndName(hubId, dto.getName().toString())
                 .orElseGet(() -> {
@@ -74,7 +74,6 @@ public class ScenarioStorageService {
             link.setScenario(scenario);
             link.setSensor(sensor);
             link.setCondition(cond);
-            link.setId(new ScenarioConditionKey(scenario.getId(), sensor.getId(), cond.getId()));
             scenario.getConditionLinks().add(link);
         }
 
@@ -90,7 +89,6 @@ public class ScenarioStorageService {
             link.setScenario(scenario);
             link.setSensor(sensor);
             link.setAction(action);
-            link.setId(new ScenarioActionKey(scenario.getId(), sensor.getId(), action.getId()));
             scenario.getActionLinks().add(link);
         }
 

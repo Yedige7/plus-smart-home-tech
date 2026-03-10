@@ -11,6 +11,7 @@ import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
@@ -23,7 +24,7 @@ public class HubEventProcessor implements Runnable {
     @Value("${app.kafka.topics.hubs}")
     private String topic;
 
-    private volatile boolean running = true;
+    private static final AtomicBoolean running = new AtomicBoolean(true);
 
     @Override
     public void run() {
@@ -31,7 +32,7 @@ public class HubEventProcessor implements Runnable {
                      (KafkaConsumer<String, HubEventAvro>) hubEventConsumerFactory.createConsumer()) {
 
             consumer.subscribe(List.of(topic));
-            while (running) {
+            while (running.get()) {
                 ConsumerRecords<String, HubEventAvro> records =
                         consumer.poll(Duration.ofMillis(1000));
 
@@ -49,6 +50,6 @@ public class HubEventProcessor implements Runnable {
     }
 
     public void stop() {
-        running = false;
+        running.set(false);
     }
 }

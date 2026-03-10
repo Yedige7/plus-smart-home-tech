@@ -21,7 +21,6 @@ public interface ScenarioRepository extends JpaRepository<Scenario, Long> {
                 left join fetch cl.sensor
                 left join fetch cl.condition
                 left join fetch s.actionLinks al
-                left join fetch al.sensor
                 left join fetch al.action
                 where s.hubId = :hubId
             """)
