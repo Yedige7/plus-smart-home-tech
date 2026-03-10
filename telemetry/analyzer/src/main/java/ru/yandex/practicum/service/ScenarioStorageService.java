@@ -74,6 +74,7 @@ public class ScenarioStorageService {
             link.setScenario(scenario);
             link.setSensor(sensor);
             link.setCondition(cond);
+            link.setId(new ScenarioConditionKey(scenario.getId(), sensor.getId(), cond.getId()));
             scenario.getConditionLinks().add(link);
         }
 
@@ -89,6 +90,7 @@ public class ScenarioStorageService {
             link.setScenario(scenario);
             link.setSensor(sensor);
             link.setAction(action);
+            link.setId(new ScenarioActionKey(scenario.getId(), sensor.getId(), action.getId()));
             scenario.getActionLinks().add(link);
         }
 
