@@ -2,34 +2,29 @@ package ru.yandex.practicum.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-        name = "scenario_action_link",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"scenario_id", "sensor_id", "action_id"})
-        }
-)
+@Table(name = "scenario_actions")
 @Getter
 @Setter
-@NoArgsConstructor
 public class ScenarioActionLink {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private ScenarioActionKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("scenarioId")
     @JoinColumn(name = "scenario_id", nullable = false)
     private Scenario scenario;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("sensorId")
     @JoinColumn(name = "sensor_id", nullable = false)
     private Sensor sensor;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("actionId")
     @JoinColumn(name = "action_id", nullable = false)
     private Action action;
 }

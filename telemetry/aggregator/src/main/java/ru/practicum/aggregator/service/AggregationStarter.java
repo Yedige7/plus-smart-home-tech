@@ -124,16 +124,16 @@ public class AggregationStarter {
     }
 
     private KafkaProducer<String, byte[]> buildProducer() {
-        Properties p = new Properties();
+        Properties properties = new Properties();
 
-        p.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        p.put(ProducerConfig.ACKS_CONFIG, "all");
-        p.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
-        p.put(ProducerConfig.LINGER_MS_CONFIG, "5");
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+        properties.put(ProducerConfig.LINGER_MS_CONFIG, "5");
 
-        p.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        p.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
 
-        return new KafkaProducer<>(p);
+        return new KafkaProducer<>(properties);
     }
 }
