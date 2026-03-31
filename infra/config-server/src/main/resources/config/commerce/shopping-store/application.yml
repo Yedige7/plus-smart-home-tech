@@ -8,13 +8,16 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
 
+  sql:
+    init:
+      mode: always
+
   jpa:
     hibernate:
-      ddl-auto: validate
-    show-sql: true
+      ddl-auto: none
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 eureka:
   client:
