@@ -1,4 +1,4 @@
-CREATE DATABASE shopping_store;
+-- CREATE DATABASE shopping_store;
 
 CREATE TABLE IF NOT EXISTS products (
                                         id UUID PRIMARY KEY,

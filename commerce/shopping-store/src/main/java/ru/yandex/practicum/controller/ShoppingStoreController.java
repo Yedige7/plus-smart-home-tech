@@ -32,6 +32,7 @@ public class ShoppingStoreController {
 
     @GetMapping("/{productId}")
     public ProductDto getById(@PathVariable UUID productId) {
+        System.out.println("getById called: " + productId);
         return shoppingStoreService.getById(productId);
     }
 
