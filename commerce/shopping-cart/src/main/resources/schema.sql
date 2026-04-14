@@ -1,4 +1,4 @@
-CREATE DATABASE shopping_cart;
+-- CREATE DATABASE shopping_cart;
 
 CREATE TABLE IF NOT EXISTS shopping_carts (
                                               id UUID PRIMARY KEY,
